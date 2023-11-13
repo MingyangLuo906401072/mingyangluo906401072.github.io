@@ -1,5 +1,5 @@
 ---
-title: "Post With Code"
+title: "Dry Beans Anaysis"
 author: "Harlow Malloc"
 date: "2023-11-08"
 categories: [news, code, analysis]
@@ -8,6 +8,15 @@ image: "image.jpg"
 
 This is a post with executable code.
 
-```{r}
+```{python}
+import sys
+print(sys.executable)
+```
+
+```{python}
 1 + 1
+```
+
+```{python}
+
 ```

@@ -1,14 +1,11 @@
 {
-  "hash": "89beab5e1e7c63cc4b90de8a45365572",
+  "hash": "1064462ee55fd23c84ab4fd15235b9b7",
   "result": {
-    "markdown": "---\ntitle: \"Post With Code\"\nauthor: \"Harlow Malloc\"\ndate: \"2023-11-08\"\ncategories: [news, code, analysis]\nimage: \"image.jpg\"\n---\n\n\nThis is a post with executable code.\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 2\n```\n:::\n:::\n",
-    "supporting": [],
-    "filters": [
-      "rmarkdown/pagebreak.lua"
+    "markdown": "---\ntitle: \"Dry Beans Anaysis\"\nauthor: \"Harlow Malloc\"\ndate: \"2023-11-08\"\ncategories: [news, code, analysis]\nimage: \"image.jpg\"\n---\n\nThis is a post with executable code.\n\n::: {.cell execution_count=1}\n``` {.python .cell-code}\nimport sys\nprint(sys.executable)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nC:\\Python311\\pythonw.exe\n```\n:::\n:::\n\n\n::: {.cell execution_count=2}\n``` {.python .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-display execution_count=4}\n```\n2\n```\n:::\n:::\n\n\n",
+    "supporting": [
+      "index_files"
     ],
-    "includes": {},
-    "engineDependencies": {},
-    "preserve": {},
-    "postProcess": true
+    "filters": [],
+    "includes": {}
   }
 }
