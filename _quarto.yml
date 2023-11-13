@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "Mingyang"
+  title: "Mingyang Blog"
   navbar:
     right:
       - icon: house
