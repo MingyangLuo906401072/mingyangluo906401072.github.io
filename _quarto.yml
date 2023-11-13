@@ -24,8 +24,8 @@ website:
 format:
   html:
     theme: 
-      light: [flatly, light.scss]
-      dark: [darkly, dark.scss]
+      light: flatly
+      dark: darkly
     css: styles.css
 
 editor: visual
