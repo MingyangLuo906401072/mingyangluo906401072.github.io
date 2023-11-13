@@ -1,6 +1,6 @@
 ---
 title: "Dry Beans Anaysis"
-author: "Harlow Malloc"
+author: "Mingyang Luo"
 date: "2023-11-08"
 categories: [news, code, analysis]
 image: "image.jpg"

@@ -1,7 +1,7 @@
 {
-  "hash": "1064462ee55fd23c84ab4fd15235b9b7",
+  "hash": "6e40bfb8d0f4ac5abf49375e5805962e",
   "result": {
-    "markdown": "---\ntitle: \"Dry Beans Anaysis\"\nauthor: \"Harlow Malloc\"\ndate: \"2023-11-08\"\ncategories: [news, code, analysis]\nimage: \"image.jpg\"\n---\n\nThis is a post with executable code.\n\n::: {.cell execution_count=1}\n``` {.python .cell-code}\nimport sys\nprint(sys.executable)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nC:\\Python311\\pythonw.exe\n```\n:::\n:::\n\n\n::: {.cell execution_count=2}\n``` {.python .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-display execution_count=2}\n```\n2\n```\n:::\n:::\n\n\n",
+    "markdown": "---\ntitle: \"Dry Beans Anaysis\"\nauthor: \"Mingyang Luo\"\ndate: \"2023-11-08\"\ncategories: [news, code, analysis]\nimage: \"image.jpg\"\n---\n\nThis is a post with executable code.\n\n::: {.cell execution_count=1}\n``` {.python .cell-code}\nimport sys\nprint(sys.executable)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nC:\\Python311\\pythonw.exe\n```\n:::\n:::\n\n\n::: {.cell execution_count=2}\n``` {.python .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-display execution_count=2}\n```\n2\n```\n:::\n:::\n\n\n",
     "supporting": [
       "index_files"
     ],

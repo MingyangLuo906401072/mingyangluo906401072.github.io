@@ -1,6 +1,6 @@
 ---
 title: "Welcome To My Blog"
-author: "Tristan O'Malley"
+author: "Mingyang Luo"
 date: "2023-11-05"
 categories: [news]
 ---
