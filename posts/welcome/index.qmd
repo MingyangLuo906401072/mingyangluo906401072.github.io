@@ -2,7 +2,7 @@
 title: "Welcome To My Blog"
 author: "Mingyang Luo"
 date: "2023-11-05"
-categories: [news]
+categories: [Classification, Anomaly Detection, Clustering]
 ---
 
 This is the first post in a Quarto blog. Welcome!

@@ -2,7 +2,7 @@
 title: "Dry Beans Anaysis"
 author: "Mingyang Luo"
 date: "2023-11-08"
-categories: [news, code, analysis]
+categories: [Classification, Clustering, Anomaly Detection]
 image: "image.jpg"
 ---
 
