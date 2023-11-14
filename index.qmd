@@ -18,7 +18,7 @@ about:
       href: 'https://linkedin.com'
     - icon: github
       text: Github
-      href: 'https://github.com'
+      href: 'https://github.com/MingyangLuo906401072'
     - icon: envelope-at
       text: Email
       href: 'mailto:lmingyang@vt.edu'
