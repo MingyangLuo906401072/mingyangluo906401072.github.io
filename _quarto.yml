@@ -6,21 +6,24 @@ website:
   title: "Mingyang"
   navbar:
     right:
-      - icon: house
+      - icon: house-gear-fill
         text: Home
         href: 'https://mingyangluo906401072.github.io/'
-      - icon: pencil
+      - icon: calendar2-week
         text: Blog
         href: 'https://mingyangluo906401072.github.io/blog'
-      - icon: twitter
-        text: Twitter
-        href: 'https://twitter.com'
+      - icon: emoji-wink
+        text: Handshake
+        href: 'https://vt.joinhandshake.com/stu/users/29799250'
       - icon: linkedin
         text: LinkedIn
         href: 'https://linkedin.com'
       - icon: github
         text: Github
         href: 'https://github.com'
+      - icon: envelope-at
+        text: Email
+        href: 'mailto:lmingyang@vt.edu'
 format:
   html:
     theme: 
