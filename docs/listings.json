@@ -2,8 +2,9 @@
   {
     "listing": "/blog.html",
     "items": [
-      "/posts/post-with-code/index.html",
-      "/posts/welcome/index.html"
+      "/posts/earthquakes/index.html",
+      "/posts/dry_beans/index.html",
+      "/posts/disease/index.html"
     ]
   }
 ]

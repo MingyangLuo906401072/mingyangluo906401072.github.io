@@ -1,0 +1,141 @@
+---
+title: "Disease Analysis"
+author: "Mingyang Luo"
+date: "2023-11-05"
+categories: [Classification, Anomaly Detection, Clustering]
+---
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.decomposition import PCA
+from sklearn.mixture import GaussianMixture
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.inspection import DecisionBoundaryDisplay
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import ConfusionMatrixDisplay
+import scipy.cluster.hierarchy as sch
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder
+import warnings
+
+warnings.filterwarnings("ignore")
+
+csv_file_path = "health.csv"
+df = pd.read_csv(csv_file_path)
+df
+```
+
+```{python}
+print(df['disease'].unique())
+print(df['disease'].value_counts())
+```
+
+```{python}
+numeric_df = df.select_dtypes(include=['number'])
+cols = numeric_df.columns
+scaler = StandardScaler()
+normalized_data = scaler.fit_transform(numeric_df)
+
+pca = PCA(n_components=2)
+data_pca = pca.fit_transform(normalized_data)
+
+normalized_df = pd.DataFrame(normalized_data, columns=cols)
+plt.figure(figsize=(8, 4))  
+pd.plotting.parallel_coordinates(normalized_df.join(df.disease), class_column='disease', colormap='hsv') 
+plt.title('Standardized Parallel Coordinates Plot')
+plt.ylabel('Values')
+plt.show()
+```
+
+```{python}
+num_samples = 1000 
+sample_indices = np.random.choice(data_pca.shape[0], num_samples, replace=False)
+sampled_data = data_pca[sample_indices]
+
+plt.figure(figsize=(8, 6)) 
+dendrogram = sch.dendrogram(sch.linkage(sampled_data, method='ward'), orientation='right')  
+plt.title('Dendrogram (Sampled Data)')
+plt.xlabel('Euclidean Distances')
+plt.ylabel('Data Points')
+plt.show()
+```
+
+```{python}
+explained_variance = pca.explained_variance_ratio_
+cumulative_explained_variance = explained_variance.cumsum()
+
+gmm = GaussianMixture(n_components=7, random_state=42)
+clusters = gmm.fit_predict(data_pca)
+
+plt.figure(figsize=(8, 6))
+plt.scatter(data_pca[:, 0], data_pca[:, 1], c=clusters, cmap='viridis', alpha=0.7, s=40)
+plt.xlabel(f'Component 1\nExplained Variance: {explained_variance[0]:.3f}, Cumulative Explained Variance: {cumulative_explained_variance[0]:.3f}')
+plt.ylabel(f'Component 2\nExplained Variance: {explained_variance[1]:.3f}, Cumulative Explained Variance: {cumulative_explained_variance[1]:.3f}')
+plt.title('Gaussian Mixture Model Clustering after PCA Dimensionality Reduction')
+plt.colorbar(label='Clusters')
+plt.show()
+```
+
+```{python}
+X1 = data_pca 
+y1 = df['disease']
+label_encoder = LabelEncoder()
+y1 = label_encoder.fit_transform(y1)
+feature_1, feature_2 = np.meshgrid(
+    np.linspace(X1[:, 0].min(), X1[:, 0].max()),
+    np.linspace(X1[:, 1].min(), X1[:, 1].max())
+)
+grid = np.vstack([feature_1.ravel(), feature_2.ravel()]).T
+tree = DecisionTreeClassifier().fit(X1, y1)
+y_pred1 = tree.predict(grid)
+y_pred1 = y_pred1.reshape(feature_1.shape)
+display = DecisionBoundaryDisplay(xx0=feature_1, xx1=feature_2, response=y_pred1)
+display.plot()
+plt.scatter(X1[:, 0], X1[:, 1], c=y1, edgecolor="k", s=10)
+plt.show()
+```
+
+```{python}
+cluster_data = pd.DataFrame({'Cluster': clusters, 'Class': df['disease']}) 
+cluster_summary = cluster_data.groupby('Cluster')['Class'].value_counts().unstack().fillna(0)
+print(cluster_summary)
+```
+
+```{python}
+densities = gmm.score_samples(data_pca)
+
+lower_bound = np.percentile(densities, 0.1)
+anomalies = data_pca[densities < lower_bound]
+
+print("Anomalies:", anomalies, "\n Shape:", anomalies.shape) 
+```
+
+```{python}
+plt.figure(figsize=(8, 6))
+plt.scatter(data_pca[:, 0], data_pca[:, 1], c=clusters, cmap='viridis', alpha=0.7, s=40)
+plt.xlabel(f'Component 1\nExplained Variance: {explained_variance[0]:.3f}, Cumulative Explained Variance: {cumulative_explained_variance[0]:.3f}')
+plt.ylabel(f'Component 2\nExplained Variance: {explained_variance[1]:.3f}, Cumulative Explained Variance: {cumulative_explained_variance[1]:.3f}')
+plt.title('Gaussian Mixture Model Clustering after PCA Dimensionality Reduction')
+plt.colorbar(label='Clusters')
+
+plt.scatter(anomalies[:, 0], anomalies[:, 1], c='red', marker='x', s=100, label='Anomalies')
+plt.legend()
+plt.show()
+```
+
+```{python}
+labels = df['disease']
+
+classifier = DecisionTreeClassifier(random_state=42)
+classifier.fit(normalized_data, labels)
+
+predicted_labels = classifier.predict(normalized_data)
+conf_matrix = confusion_matrix(labels, predicted_labels)
+
+disp = ConfusionMatrixDisplay(conf_matrix, display_labels=classifier.classes_)
+disp.plot(cmap='viridis', values_format='.0f')
+plt.title('Confusion Matrix for Decision Tree Classifier')
+plt.show()
+```
