@@ -9,14 +9,324 @@ image: "image.jpg"
 This is a post with executable code.
 
 ```{python}
-import sys
-print(sys.executable)
+import pandas as pd
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+from sklearn.model_selection import learning_curve
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import accuracy_score, classification_report, roc_curve, auc, roc_auc_score
+import matplotlib.pyplot as plt
+import matplotlib
+import numpy as np
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+import scipy.cluster.hierarchy as sch
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import recall_score
+from sklearn.svm import SVC
+from sklearn.metrics import ConfusionMatrixDisplay
+from sklearn.inspection import DecisionBoundaryDisplay
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import label_binarize
+import warnings
+
+warnings.filterwarnings("ignore")
+
+excel_file_path = "DryBeanDataset/Dry_Bean_Dataset.xlsx"
+df = pd.read_excel(excel_file_path)
+df
 ```
 
 ```{python}
-1 + 1
+numeric_df = df.select_dtypes(include=['number'])
+cols = numeric_df.columns
+scaler = StandardScaler()
+numeric_df = scaler.fit_transform(numeric_df)
+pca = PCA(n_components=2)
+df_pca = pca.fit_transform(numeric_df)
+normalized_df = pd.DataFrame(numeric_df, columns=cols)
+
+plt.figure(figsize=(23, 6))  
+pd.plotting.parallel_coordinates(normalized_df.join(df.Class), class_column='Class', colormap='hsv') 
+plt.title('Standardized Parallel Coordinates Plot')
+plt.ylabel('Values')
+plt.show()
+```
+
+```{python}
+kmeans = KMeans(n_clusters=7, random_state=42)
+df['Cluster'] = kmeans.fit_predict(df_pca)
+labels = kmeans.labels_
+
+cluster_centers = kmeans.cluster_centers_
+
+distances = []
+for i, label in enumerate(kmeans.labels_):
+    center = cluster_centers[label]
+    point = df_pca[i]
+    distance = np.linalg.norm(point - center)  # Euclidean distance
+    distances.append(distance)
+
+threshold = np.percentile(distances, 99)  
+anomalies = df_pca[np.array(distances) > threshold]
+
+plt.figure(figsize=(8, 6))
+plt.scatter(df_pca[:, 0], df_pca[:, 1], c=labels, cmap='viridis', marker='o', alpha=0.6)
+plt.scatter(cluster_centers[:, 0], cluster_centers[:, 1], s=100, c='cyan', marker='o', label='Cluster Centers')
+plt.xlabel(f'Principal Component 1 (Explained Variance: {pca.explained_variance_ratio_[0]:.3f}')
+plt.ylabel(f'Principal Component 2 (Explained Variance: {pca.explained_variance_ratio_[1]:.3f}')
+plt.title('Clustering of Dry Beans using KMeans with 7 clusters')
+plt.scatter(anomalies[:, 0], anomalies[:, 1], c='red', marker='x', s=100, label='Anomalies')
+plt.legend()
+plt.show()
+```
+
+```{python}
+X1 = df_pca
+y1 = df['Class']
+label_encoder = LabelEncoder()
+y1 = label_encoder.fit_transform(y1)
+feature_1, feature_2 = np.meshgrid(
+    np.linspace(X1[:, 0].min(), X1[:, 0].max()),
+    np.linspace(X1[:, 1].min(), X1[:, 1].max())
+)
+grid = np.vstack([feature_1.ravel(), feature_2.ravel()]).T
+tree = DecisionTreeClassifier().fit(X1, y1)
+y_pred1 = tree.predict(grid)
+y_pred1 = y_pred1.reshape(feature_1.shape)
+display = DecisionBoundaryDisplay(xx0=feature_1, xx1=feature_2, response=y_pred1)
+display.plot()
+plt.scatter(X1[:, 0], X1[:, 1], c=y1, edgecolor="k", s=10)
+plt.show()
+```
+
+```{python}
+cluster_data = pd.DataFrame({'Cluster': df['Cluster'], 'Class': df['Class']})  
+cluster_summary = cluster_data.groupby('Cluster')['Class'].value_counts().unstack().fillna(0)
+print(cluster_summary)
+```
+
+```{python}
+X = numeric_df 
+y = df['Class']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+clf = DecisionTreeClassifier(max_depth=8, random_state=42)
+clf.fit(X_train, y_train)
+
+y_scores = clf.predict_proba(X_test)
+y_pred = clf.predict(X_test)
+
+cm = confusion_matrix(y_test, y_pred, labels=clf.classes_)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=clf.classes_)
+disp.plot(cmap='Blues', values_format='d')
+plt.show()
+```
+
+```{python}
+y_bin = label_binarize(y_test, classes=clf.classes_)
+
+fpr = dict()
+tpr = dict()
+roc_auc = dict()
+
+for i in range(len(clf.classes_)):
+    fpr[i], tpr[i], _ = roc_curve(y_bin[:, i], y_scores[:, i])
+    roc_auc[i] = auc(fpr[i], tpr[i])
+
+# Plot ROC curves
+plt.figure(figsize=(8, 6))
+
+for i in range(len(clf.classes_)):
+    plt.plot(fpr[i], tpr[i], label=f'ROC curve (area = {roc_auc[i]:.2f}) for class {clf.classes_[i]}')
+
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic (ROC) Curve for Multiclass Classification')
+plt.legend(loc="lower right")
+plt.show()
+```
+
+```{python}
+train_sizes, train_scores, test_scores = learning_curve(clf, X_train, y_train, train_sizes=np.linspace(0.1, 1.0, 10), cv=5, scoring='accuracy')
+
+train_scores_mean = np.mean(train_scores, axis=1)
+train_scores_std = np.std(train_scores, axis=1)
+test_scores_mean = np.mean(test_scores, axis=1)
+test_scores_std = np.std(test_scores, axis=1)
+
+plt.figure()
+plt.title("Learning Curve")
+plt.xlabel("Training examples")
+plt.ylabel("Accuracy")
+
+plt.plot(train_sizes, train_scores_mean, 'o-', color="r", label="Training score")
+plt.plot(train_sizes, test_scores_mean, 'o-', color="g", label="Cross-validation score")
+
+plt.fill_between(train_sizes, train_scores_mean - train_scores_std, train_scores_mean + train_scores_std, alpha=0.1, color="r")
+plt.fill_between(train_sizes, test_scores_mean - test_scores_std, test_scores_mean + test_scores_std, alpha=0.1, color="g")
+
+plt.legend()
+plt.show()
+```
+
+```{python}
+from IPython.display import Image
+import pydot
+from sklearn.tree import export_graphviz
+import graphviz
+
+data=export_graphviz(
+    clf,
+    feature_names=df.drop(columns=['Class', 'Cluster']).columns,
+    class_names=clf.classes_,
+    rounded=True,
+    filled=True,
+    max_depth=4,
+)
+
+graph = pydot.graph_from_dot_data(data)
+Image(graph[0].create_png())
+
+# graph = graphviz.Source(data)
+# graph.render("decision_tree")
+```
+
+```{python}
+roc_auc = roc_auc_score(y_test, y_scores, multi_class='ovo')  
+print(f'ROC AUC Score: {roc_auc:.2f}')
+```
+
+```{python}
+scores = cross_val_score(clf, X, y, cv=5, scoring='accuracy')
+mean_score = scores.mean()
+std_score = scores.std()
+print(f'Standard Error Score: {std_score:.2f}')
+```
+
+```{python}
+# recall = recall_score(y_test, y_pred, average=None)
+recall = recall_score(y_test, y_pred, average='macro')
+print(f'Recall Score: {recall:.2f}')
+```
+
+```{python}
+X_train1, X_test1, y_train1, y_test1 = train_test_split(X, y, test_size=0.2, random_state=42)
+
+clf1 = RandomForestClassifier(n_estimators=20, max_depth=8, random_state=42)
+clf1.fit(X_train1, y_train1)
+
+y_scores1 = clf1.predict_proba(X_test1)
+
+fpr1 = dict()
+tpr1 = dict()
+roc_auc1 = dict()
+
+for i in range(len(clf1.classes_)):
+    fpr1[i], tpr1[i], _ = roc_curve((y_test1 == clf1.classes_[i]).astype(int), y_scores1[:, i])
+    roc_auc1[i] = auc(fpr1[i], tpr1[i])
+
+plt.figure(figsize=(8, 6))
+
+for i in range(len(clf1.classes_)):
+    plt.plot(fpr1[i], tpr1[i], label=f'ROC curve (area = {roc_auc1[i]:.2f}) for class {clf1.classes_[i]}')
+
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic (ROC) Curve for Multiclass Classification')
+plt.legend(loc="lower right")
+plt.show()
+```
+
+```{python}
+train_sizes1, train_scores1, test_scores1 = learning_curve(clf1, X_train1, y_train1, train_sizes=np.linspace(0.1, 1.0, 10), cv=5, scoring='accuracy')
+
+train_scores_mean1 = np.mean(train_scores1, axis=1)
+train_scores_std1 = np.std(train_scores1, axis=1)
+test_scores_mean1 = np.mean(test_scores1, axis=1)
+test_scores_std1 = np.std(test_scores1, axis=1)
+
+plt.figure()
+plt.title("Learning Curve")
+plt.xlabel("Training examples")
+plt.ylabel("Accuracy")
+
+plt.plot(train_sizes1, train_scores_mean1, 'o-', color="r", label="Training score")
+plt.plot(train_sizes1, test_scores_mean1, 'o-', color="g", label="Cross-validation score")
+
+plt.fill_between(train_sizes1, train_scores_mean1 - train_scores_std1, train_scores_mean1 + train_scores_std1, alpha=0.1, color="r")
+plt.fill_between(train_sizes1, test_scores_mean1 - test_scores_std1, test_scores_mean1 + test_scores_std1, alpha=0.1, color="g")
+
+plt.legend()
+plt.show()
+```
+
+```{python}
+y_pred1 = clf1.predict(X_test1)
+cm1 = confusion_matrix(y_test1, y_pred1, labels=clf1.classes_)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm1, display_labels=clf1.classes_)
+disp.plot(cmap='Purples', values_format='d')
+plt.show()
 ```
 
 ```{python}
 
+```
+
+```{python}
+scores = cross_val_score(clf, X, y, cv=5, scoring='accuracy')
+mean_score = scores.mean()
+std_score = scores.std()
+print(f'Standard Error Score: {std_score:.2f}')
+```
+
+```{python}
+recall = recall_score(y_test, y_pred, average='macro')
+print(f'Recall Score: {recall:.2f}')
+```
+
+```{python}
+roc_auc = roc_auc_score(y_test, y_scores, multi_class='ovo')  
+print(f'ROC AUC Score: {roc_auc:.2f}')
+```
+
+```{python}
+X_train2, X_test2, y_train2, y_test2 = train_test_split(X, y, test_size=0.2, random_state=42)
+
+clf2 = SVC(probability=True, C=0.2, random_state=42)
+clf2.fit(X_train2, y_train2)
+
+y_scores2 = clf2.predict_proba(X_test2)
+
+fpr2 = dict()
+tpr2 = dict()
+roc_auc2 = dict()
+
+for i in range(len(clf2.classes_)):
+    fpr2[i], tpr2[i], _ = roc_curve((y_test2 == clf2.classes_[i]).astype(int), y_scores2[:, i])
+    roc_auc2[i] = auc(fpr2[i], tpr2[i])
+
+plt.figure(figsize=(8, 6))
+
+for i in range(len(clf2.classes_)):
+    plt.plot(fpr2[i], tpr2[i], label=f'ROC curve (area = {roc_auc2[i]:.2f}) for class {clf2.classes_[i]}')
+
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic (ROC) Curve for Multiclass Classification')
+plt.legend(loc="lower right")
+plt.show()
 ```
