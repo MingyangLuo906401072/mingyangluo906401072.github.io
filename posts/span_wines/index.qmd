@@ -1,0 +1,147 @@
+---
+title: "Span Wines Anaysis"
+author: "Mingyang Luo"
+date: "2023-11-08"
+categories: [Classification, Anomaly Detection]
+image: "image.jpg"
+---
+
+This is a post with executable code.
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.decomposition import PCA
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, recall_score, classification_report
+from sklearn.model_selection import learning_curve
+from sklearn.metrics import confusion_matrix
+from sklearn.svm import OneClassSVM
+import seaborn as sns
+import warnings
+warnings.filterwarnings("ignore")
+
+csv_file_path = "wines_SPA.csv"
+df = pd.read_csv(csv_file_path)
+df
+```
+
+```{python}
+unique_country = df['country'].nunique()
+print(f"Number of unique country: {unique_country}")
+```
+
+```{python}
+categorical_columns = ['winery', 'region', 'type']
+numeric_columns = ['year', 'rating', 'num_reviews', 'price', 'body', 'acidity']
+
+X_categorical = df[categorical_columns]
+X_numeric = df[numeric_columns]
+X_numeric['year'] = pd.to_numeric(X_numeric['year'], errors='coerce')
+
+nan_indices = df['wine'].index[df['wine'].isnull()]
+X_categorical = X_categorical.drop(nan_indices)
+X_numeric = X_numeric.drop(nan_indices)
+y = df['wine'].drop(nan_indices)
+
+numeric_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='mean')),  
+    ('scaler', StandardScaler()),
+    ('pca', PCA(n_components=2))
+])
+
+X_processed_numeric = numeric_transformer.fit_transform(X_numeric)
+
+categorical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='most_frequent')),  
+    ('onehot', OneHotEncoder(handle_unknown='ignore', sparse=False))
+])
+
+X_processed_categorical = categorical_transformer.fit_transform(X_categorical)
+
+result_df_numeric = pd.DataFrame(data=X_processed_numeric, columns=['PC1', 'PC2'])
+result_df_categorical = pd.DataFrame(X_processed_categorical, columns=categorical_transformer.named_steps['onehot'].get_feature_names_out(categorical_columns))
+result_df = pd.concat([result_df_numeric, result_df_categorical], axis=1)
+
+X_train, X_test, y_train, y_test = train_test_split(result_df, y, test_size=0.2, random_state=42)
+
+nb_model = GaussianNB(var_smoothing=1e-02)
+nb_model.fit(X_train, y_train)
+
+predictions = nb_model.predict(X_test)
+
+accuracy = accuracy_score(y_test, predictions)
+recall = recall_score(y_test, predictions, average='weighted')  # Change average as needed
+report = classification_report(y_test, predictions)
+
+print(f"Accuracy: {accuracy:.2f}")
+print(f"Recall: {recall:.2f}")
+print("Classification Report:")
+print(report)
+```
+
+```{python}
+print(predictions)
+```
+
+```{python}
+conf_matrix = confusion_matrix(y_test, predictions)
+conf_matrix_norm = conf_matrix / conf_matrix.sum(axis=1)[:, np.newaxis]
+
+plt.figure(figsize=(40, 30))
+sns.heatmap(conf_matrix_norm, annot=False, cmap='Purples')  
+plt.title('Normalized Confusion Matrix')
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.show()
+# YlGnBu
+```
+
+```{python}
+pca_model = numeric_transformer.named_steps['pca']
+explained_variance = pca_model.explained_variance_ratio_
+
+plt.figure(figsize=(8, 6))
+plt.scatter(result_df['PC1'], result_df['PC2'], c='coral', alpha=0.5)
+plt.title('PCA Components: PC1 vs PC2')
+plt.xlabel('Principal Component 1 (PC1)')
+plt.ylabel('Principal Component 2 (PC2)')
+
+# Annotate explained variance
+plt.annotate(f'Explained Variance PC1: {explained_variance[0]:.2f}',
+             xy=(result_df['PC1'].min(), result_df['PC2'].max()), 
+             xytext=(result_df['PC1'].min() + 1, result_df['PC2'].max() - 1),
+             arrowprops=dict(facecolor='black', arrowstyle='->'))
+
+plt.annotate(f'Explained Variance PC2: {explained_variance[1]:.2f}',
+             xy=(result_df['PC1'].max(), result_df['PC2'].min()), 
+             xytext=(result_df['PC1'].max() - 2, result_df['PC2'].min() + 1),
+             arrowprops=dict(facecolor='black', arrowstyle='->'))
+
+plt.grid(True)
+plt.show()
+```
+
+```{python}
+svm = OneClassSVM(nu=0.03) 
+outliers_svm = svm.fit_predict(X_processed_numeric)
+result_df['is_outlier_svm'] = outliers_svm
+
+anomaly_points_svm = result_df[result_df['is_outlier_svm'] == -1]
+
+plt.figure(figsize=(8, 6))
+plt.scatter(result_df['PC1'], result_df['PC2'], alpha=0.5, c='coral', label='Normal')
+plt.scatter(anomaly_points_svm['PC1'], anomaly_points_svm['PC2'], color='red', marker='x', label='Anomaly (SVM)')
+plt.title('PCA Components: PC1 vs PC2 with Anomalies (SVM)')
+plt.xlabel('Principal Component 1 (PC1)')
+plt.ylabel('Principal Component 2 (PC2)')
+plt.legend()
+plt.grid(True)
+plt.show()
+```

@@ -1,0 +1,147 @@
+---
+title: "Real Estate Analysis"
+author: "Mingyang Luo"
+date: "2023-11-05"
+categories: [Linear Regression, Non-linear Regression]
+---
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import learning_curve
+from sklearn.decomposition import PCA
+import warnings
+
+warnings.filterwarnings("ignore")
+
+csv_file_path = "real_estate.csv"
+df = pd.read_csv(csv_file_path)
+df.drop('No', axis=1, inplace=True)
+df
+```
+
+```{python}
+X = df.drop('Y house price of unit area', axis=1)
+Y = df['Y house price of unit area']
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+pca = PCA(n_components=2)  
+X_pca = pca.fit_transform(X_scaled)
+
+plt.figure(figsize=(8, 6))
+plt.scatter(X_pca[:, 0], X_pca[:, 1], c=Y, cmap='viridis')
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.title('PCA Visualization')
+plt.colorbar(label='house price of unit area')
+plt.show()
+```
+
+```{python}
+X_pca = pd.DataFrame(X_pca)
+X_pca_with_date = pd.concat([X_pca, X['X1 transaction date']], axis=1)
+
+X_train_pca, X_test_pca, Y_train, Y_test = train_test_split(X_pca_with_date, Y, test_size=0.2, random_state=42)
+
+X_train_without_date = X_train_pca.drop('X1 transaction date', axis=1)
+X_test_without_date = X_test_pca.drop('X1 transaction date', axis=1)
+X_test_dates = X_test_pca['X1 transaction date']
+
+model = LinearRegression()
+model.fit(X_train_without_date, Y_train)
+
+predictions = model.predict(X_test_without_date)
+
+plt.figure(figsize=(8, 6))
+
+plt.scatter(range(len(Y_test)), Y_test, color='blue', label='Actual')
+plt.plot(range(len(Y_test)), model.predict(X_test_without_date), color='green', label='Regression Line')
+
+plt.xlabel('Data Points')
+plt.ylabel('Y house price of unit area')
+plt.title('Actual vs. Predicted Price')
+plt.legend()
+plt.show()
+```
+
+```{python}
+sorted_indices = np.argsort(X_test_dates)
+sorted_dates = X_test_dates.iloc[sorted_indices]
+sorted_predictions = predictions[sorted_indices]
+
+plt.figure(figsize=(8, 6))
+plt.scatter(sorted_dates, Y_test.iloc[sorted_indices], color='red', label='Actual')
+plt.plot(sorted_dates, sorted_predictions, color='orange', label='Sorted Regression Line')
+plt.xlabel('Transaction Date')
+plt.ylabel('Y house price of unit area')
+plt.title('Actual vs. Predicted Price (Sorted by Date)')
+plt.legend()
+plt.show()
+```
+
+```{python}
+def plot_learning_curve(estimator, X, y):
+    train_sizes, train_scores, val_scores = learning_curve(
+        estimator, X, y, train_sizes=np.linspace(0.1, 1.0, 10), cv=5)
+
+    train_scores_mean = np.mean(train_scores, axis=1)
+    val_scores_mean = np.mean(val_scores, axis=1)
+    train_scores_std = np.std(train_scores, axis=1)
+    val_scores_std = np.std(val_scores, axis=1)
+    val_scores_var_squared = val_scores_std ** 2
+
+    plt.figure(figsize=(8, 6))
+    plt.plot(train_sizes, train_scores_mean, label='Training Score', color='blue')
+    plt.plot(train_sizes, val_scores_mean, label='Cross-Validation Score', color='orange')
+
+    plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
+                     train_scores_mean + train_scores_std, alpha=0.3, color='blue')
+    plt.fill_between(train_sizes, val_scores_mean - val_scores_std,
+                     val_scores_mean + val_scores_std, alpha=0.3, color='orange')
+
+    plt.xlabel('Training Set Size')
+    plt.ylabel('Score')
+    plt.title('Learning Curve with Std Dev and Squared Variance')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+plot_learning_curve(model, X_train_without_date, Y_train)
+```
+
+```{python}
+forest_model = RandomForestRegressor(n_estimators=100, random_state=42)  
+forest_model.fit(X_train_without_date, Y_train)
+
+forest_predictions = forest_model.predict(X_test_without_date)
+
+years_test = X_test_dates
+
+plt.figure(figsize=(10, 6))
+plt.scatter(years_test, Y_test, alpha=0.7, c='blueviolet', label='Actual')
+
+sorted_indices = np.argsort(years_test)
+sorted_predictions = forest_predictions[sorted_indices]
+sorted_dates = years_test.iloc[sorted_indices].values
+print(f"test transaction dates:\n{sorted_dates}")
+
+plt.plot(years_test.iloc[sorted_indices], sorted_predictions, color='deeppink', label='Predicted')
+
+plt.xlabel('Year')
+plt.ylabel('Y house price of unit area')
+plt.title('Actual vs. Predicted Price (Linear Regression)')
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+
+```{python}
+plot_learning_curve(forest_model, X_train_without_date, Y_train)
+```
