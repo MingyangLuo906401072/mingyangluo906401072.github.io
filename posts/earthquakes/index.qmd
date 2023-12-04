@@ -2,7 +2,7 @@
 title: "Earthquake Analysis"
 author: "Mingyang Luo"
 date: "2023-11-18"
-categories: Regression
+categories: Non-linear Regression, Linear Regression
 ---
 
 ```{python}
@@ -94,12 +94,12 @@ for input_feat in input_features:
         plt.figure(figsize=(8, 6))
         
         # Plot the actual values
-        plt.scatter(X_test[input_feat], y_test[output_var], label=f'Actual {output_var}', alpha=0.6)
+        plt.scatter(X_test[input_feat], y_test[output_var], c='forestgreen', label=f'Actual {output_var}', alpha=0.6)
         
         # Plot the predicted values with a line
         sorted_indices = X_test[input_feat].argsort()
         plt.plot(X_test[input_feat].values[sorted_indices], poly_predictions[:, output_variables.index(output_var)][sorted_indices], 
-                 label=f'Predicted {output_var}', color='red', lw=2)
+                 label=f'Predicted {output_var}', color='chocolate', lw=1)
 
         plt.xlabel(input_feat)
         plt.ylabel('Output Variables')
@@ -161,17 +161,17 @@ for input_feat in input_features:
         plt.figure(figsize=(8, 6))
         
         # Plot the actual values
-        plt.scatter(X_test[input_feat], y_test[output_var], label=f'Actual {output_var}', alpha=0.6)
+        plt.scatter(X_test[input_feat], y_test[output_var], color='palevioletred', label=f'Actual {output_var}', alpha=0.6)
         
         # Plot the predicted values with a line
         sorted_indices = X_test[input_feat].argsort()
         plt.plot(X_test[input_feat].values[sorted_indices], svm_predictions[:, output_variables.index(output_var)][sorted_indices], 
-                 label=f'Predicted {output_var}', color='red', lw=2)
+                 label=f'Predicted {output_var}', color='darkorchid', lw=1)
 
         plt.xlabel(input_feat)
         plt.ylabel('Output Variables')
         plt.title(f'Output Variables vs {input_feat}')
         plt.legend()
 
-        plt.show()q
+        plt.show()
 ```

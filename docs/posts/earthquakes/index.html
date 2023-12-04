@@ -165,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div class="quarto-title column-body">
       <h1 class="title">Earthquake Analysis</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">Regression</div>
+                <div class="quarto-category">Non-linear Regression, Linear Regression</div>
               </div>
                   </div>
   </div>
@@ -518,7 +518,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>mse <span class="op">=</span> mean_squared_error(y_test, poly_predictions)</span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Mean Squared Error: </span><span class="sc">{</span>mse<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Mean Squared Error: 0.6435738280241988</code></pre>
+<pre><code>Mean Squared Error: 0.6435738280241989</code></pre>
 </div>
 </div>
 <div class="cell" data-execution_count="4">
@@ -537,7 +537,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-5-output-1.png" width="605" height="449"></p>
+<p><img src="index_files/figure-html/cell-5-output-1.png" width="604" height="449"></p>
 </div>
 </div>
 <div class="cell" data-execution_count="5">
@@ -579,12 +579,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        </span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Plot the actual values</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        plt.scatter(X_test[input_feat], y_test[output_var], label<span class="op">=</span><span class="ss">f'Actual </span><span class="sc">{</span>output_var<span class="sc">}</span><span class="ss">'</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        plt.scatter(X_test[input_feat], y_test[output_var], c<span class="op">=</span><span class="st">'forestgreen'</span>, label<span class="op">=</span><span class="ss">f'Actual </span><span class="sc">{</span>output_var<span class="sc">}</span><span class="ss">'</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        </span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Plot the predicted values with a line</span></span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        sorted_indices <span class="op">=</span> X_test[input_feat].argsort()</span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        plt.plot(X_test[input_feat].values[sorted_indices], poly_predictions[:, output_variables.index(output_var)][sorted_indices], </span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                 label<span class="op">=</span><span class="ss">f'Predicted </span><span class="sc">{</span>output_var<span class="sc">}</span><span class="ss">'</span>, color<span class="op">=</span><span class="st">'red'</span>, lw<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                 label<span class="op">=</span><span class="ss">f'Predicted </span><span class="sc">{</span>output_var<span class="sc">}</span><span class="ss">'</span>, color<span class="op">=</span><span class="st">'chocolate'</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        plt.xlabel(input_feat)</span>
 <span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        plt.ylabel(<span class="st">'Output Variables'</span>)</span>
@@ -596,10 +596,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/cell-7-output-1.png" width="662" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-7-output-2.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-7-output-2.png" width="674" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-7-output-3.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-7-output-3.png" width="674" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
 <p><img src="index_files/figure-html/cell-7-output-4.png" width="663" height="523"></p>
@@ -614,28 +614,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/cell-7-output-7.png" width="662" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-7-output-8.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-7-output-8.png" width="674" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-7-output-9.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-7-output-9.png" width="674" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
 <p><img src="index_files/figure-html/cell-7-output-10.png" width="662" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-7-output-11.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-7-output-11.png" width="674" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-7-output-12.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-7-output-12.png" width="674" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
 <p><img src="index_files/figure-html/cell-7-output-13.png" width="662" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-7-output-14.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-7-output-14.png" width="674" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-7-output-15.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-7-output-15.png" width="674" height="523"></p>
 </div>
 </div>
 <div class="cell" data-execution_count="7">
@@ -647,7 +647,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>mse <span class="op">=</span> mean_squared_error(y_test, svm_predictions)</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Mean Squared Error with SVM: </span><span class="sc">{</span>mse<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Mean Squared Error with SVM: 0.30249069882639784</code></pre>
+<pre><code>Mean Squared Error with SVM: 0.3024906988263978</code></pre>
 </div>
 </div>
 <div class="cell" data-execution_count="8">
@@ -708,12 +708,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        </span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Plot the actual values</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        plt.scatter(X_test[input_feat], y_test[output_var], label<span class="op">=</span><span class="ss">f'Actual </span><span class="sc">{</span>output_var<span class="sc">}</span><span class="ss">'</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        plt.scatter(X_test[input_feat], y_test[output_var], color<span class="op">=</span><span class="st">'palevioletred'</span>, label<span class="op">=</span><span class="ss">f'Actual </span><span class="sc">{</span>output_var<span class="sc">}</span><span class="ss">'</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        </span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Plot the predicted values with a line</span></span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        sorted_indices <span class="op">=</span> X_test[input_feat].argsort()</span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        plt.plot(X_test[input_feat].values[sorted_indices], svm_predictions[:, output_variables.index(output_var)][sorted_indices], </span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>                 label<span class="op">=</span><span class="ss">f'Predicted </span><span class="sc">{</span>output_var<span class="sc">}</span><span class="ss">'</span>, color<span class="op">=</span><span class="st">'red'</span>, lw<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>                 label<span class="op">=</span><span class="ss">f'Predicted </span><span class="sc">{</span>output_var<span class="sc">}</span><span class="ss">'</span>, color<span class="op">=</span><span class="st">'darkorchid'</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
 <span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        plt.xlabel(input_feat)</span>
 <span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>        plt.ylabel(<span class="st">'Output Variables'</span>)</span>
@@ -725,10 +725,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/cell-11-output-1.png" width="662" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-11-output-2.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-11-output-2.png" width="674" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-11-output-3.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-11-output-3.png" width="674" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
 <p><img src="index_files/figure-html/cell-11-output-4.png" width="663" height="523"></p>
@@ -743,28 +743,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/cell-11-output-7.png" width="662" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-11-output-8.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-11-output-8.png" width="674" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-11-output-9.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-11-output-9.png" width="674" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
 <p><img src="index_files/figure-html/cell-11-output-10.png" width="662" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-11-output-11.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-11-output-11.png" width="674" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-11-output-12.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-11-output-12.png" width="674" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
 <p><img src="index_files/figure-html/cell-11-output-13.png" width="662" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-11-output-14.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-11-output-14.png" width="674" height="523"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-11-output-15.png" width="675" height="523"></p>
+<p><img src="index_files/figure-html/cell-11-output-15.png" width="674" height="523"></p>
 </div>
 </div>
 
