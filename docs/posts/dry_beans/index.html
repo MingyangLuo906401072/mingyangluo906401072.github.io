@@ -203,7 +203,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>This is a post with executable code.</p>
+<p><strong><code>DecisionTreeClassifier</code></strong> operates by partitioning the dataset into subsets based on the values of input features. It creates a tree-like structure where each node represents a feature, each branch denotes a decision based on that feature, and each leaf node signifies the class label or outcome. While decision trees are interpretable and intuitive, they are prone to overfitting when the tree grows too complex.</p>
+<p>On the other hand, <strong><code>RandomForestClassifier</code></strong> is an ensemble learning method that builds multiple decision trees and amalgamates their predictions to make a more robust and accurate classification. It operates by constructing a multitude of decision trees, each trained on a random subset of the dataset and using a random subset of features. The final prediction is determined by aggregating the predictions of all the individual trees, usually through voting or averaging. This ensemble approach tends to reduce overfitting and enhances the model’s generalizability.</p>
+<p>The differences lie in their methodologies and performances. Decision trees are simple to interpret but might overfit the training data. Random forests, leveraging the wisdom of multiple trees, tend to offer higher accuracy and better resilience against overfitting. However, they might be less interpretable due to the complexity of aggregating predictions from multiple trees.</p>
 <div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix</span>
@@ -489,6 +491,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<p>Parallel coordinate plots, a visualization method, display how different categories behave across various standardized numeric dimensions, offering a clear visual narrative of patterns and trends within the dataset. Together, these tools provide a powerful lens to explore and understand relationships among normalized numeric features.</p>
 <div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>numeric_df <span class="op">=</span> df.select_dtypes(include<span class="op">=</span>[<span class="st">'number'</span>])</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> numeric_df.columns</span>
@@ -507,6 +510,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/cell-3-output-1.png" width="1832" height="505"></p>
 </div>
 </div>
+<p>Use KMeans clustering for visualization of how the dry bean dataset organizes into distinct clusters. The identified anomalies, highlighted in the plot, serve as potential outliers worth examining further. This methodology aids in both understanding the dataset’s natural groupings and pinpointing potential irregularities.</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>kmeans <span class="op">=</span> KMeans(n_clusters<span class="op">=</span><span class="dv">7</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Cluster'</span>] <span class="op">=</span> kmeans.fit_predict(df_pca)</span>
@@ -537,6 +541,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/cell-4-output-1.png" width="662" height="523"></p>
 </div>
 </div>
+<p>Visualize a Decision Tree Classifier’s decision boundary in a PCA-transformed dataset. By creating a meshgrid and predicting class labels across this grid, the plot illustrates how the classifier categorizes data in the transformed feature space.</p>
 <div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>X1 <span class="op">=</span> df_pca</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>y1 <span class="op">=</span> df[<span class="st">'Class'</span>]</span>
@@ -558,6 +563,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/cell-5-output-1.png" width="569" height="411"></p>
 </div>
 </div>
+<p>Generates a summarized view of the distribution of classes within each cluster. The resulting table showcases the count of each class within every cluster, describing how classes are distributed across different clusters in the dataset.</p>
 <div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cluster_data <span class="op">=</span> pd.DataFrame({<span class="st">'Cluster'</span>: df[<span class="st">'Cluster'</span>], <span class="st">'Class'</span>: df[<span class="st">'Class'</span>]})  </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>cluster_summary <span class="op">=</span> cluster_data.groupby(<span class="st">'Cluster'</span>)[<span class="st">'Class'</span>].value_counts().unstack().fillna(<span class="dv">0</span>)</span>
@@ -574,6 +580,7 @@ Cluster
 6           378.0     0.0  1245.0       0.0    59.0     0.0     5.0</code></pre>
 </div>
 </div>
+<p>Generates a confusion matrix (cm) comparing predicted labels y_pred against the actual labels y_test to evaluate model performance. The ConfusionMatrixDisplay from scikit-learn visualizes this matrix, providing insights into the classifier’s accuracy in predicting different classes. The color-coded matrix, displayed using a blue colormap, demonstrates the classifier’s performance across different classes, enabling an assessment of its predictive strengths and weaknesses.</p>
 <div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> numeric_df </span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">'Class'</span>]</span>
@@ -594,6 +601,7 @@ Cluster
 <p><img src="index_files/figure-html/cell-7-output-1.png" width="573" height="431"></p>
 </div>
 </div>
+<p>The resulting plot visualizes the ROC curves for each class, with the x-axis representing the False Positive Rate and the y-axis representing the True Positive Rate. The dashed diagonal line represents a random classifier. The curves’ proximity to the upper-left corner indicates better classification performance, and the AUC values quantify the overall predictive power for each class.</p>
 <div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>y_bin <span class="op">=</span> label_binarize(y_test, classes<span class="op">=</span>clf.classes_)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -623,6 +631,7 @@ Cluster
 <p><img src="index_files/figure-html/cell-8-output-1.png" width="674" height="523"></p>
 </div>
 </div>
+<p>The shaded areas around each curve depict the variance (standard deviation) of the scores across different cross-validation folds for both training and testing data. This learning curve explains the model’s behavior related to dataset sizes.</p>
 <div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>train_sizes, train_scores, test_scores <span class="op">=</span> learning_curve(clf, X_train, y_train, train_sizes<span class="op">=</span>np.linspace(<span class="fl">0.1</span>, <span class="fl">1.0</span>, <span class="dv">10</span>), cv<span class="op">=</span><span class="dv">5</span>, scoring<span class="op">=</span><span class="st">'accuracy'</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -648,6 +657,9 @@ Cluster
 <p><img src="index_files/figure-html/cell-9-output-1.png" width="608" height="449"></p>
 </div>
 </div>
+<p>This visualization serves as a visual roadmap of the Decision Tree Classifier’s decision-making process. It encapsulates how the classifier discerns between different classes based on distinct features. The parameter max_depth=4 limits the depth of the tree, enhancing its readability and interpretability.</p>
+<p>An interesting observation emerges from this visualization: the ‘BOMBAY’ class is entirely classified within the 4th depth of this decision tree. This finding aligns seamlessly with the ROC curve analysis, indicating a perfect 100 percent true positive rate for ‘BOMBAY’. This convergence between the decision tree’s structure and the ROC curve reinforces the accuracy of the classifier in precisely identifying instances belonging to the ‘BOMBAY’ class.</p>
+<p>The correlation showcases model’s capability to accurately classify instances of the ‘BOMBAY’ class, which could well explain previous and subsequent parts’ roc curve’s behavior.</p>
 <div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Image</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pydot</span>
