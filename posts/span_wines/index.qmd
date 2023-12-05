@@ -3,7 +3,7 @@ title: "Span Wines Anaysis"
 author: "Mingyang Luo"
 date: "2023-11-08"
 categories: [Probability theory, Classification, Anomaly Detection]
-image: "image.jpg"
+image: "wine1.jpg"
 ---
 
 $\textbf{Naive Bayes}$

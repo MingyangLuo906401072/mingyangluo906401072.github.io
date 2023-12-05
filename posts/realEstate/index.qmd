@@ -5,6 +5,8 @@ date: "2023-11-05"
 categories: [Linear Regression, Non-linear Regression]
 ---
 
+This post centers on the application of regression techniques with chronological data order.
+
 ```{python}
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -44,6 +46,8 @@ plt.colorbar(label='house price of unit area')
 plt.show()
 ```
 
+In this analysis, a linear regression model is applied without accounting for the chronological order of dates within the dataset.
+
 ```{python}
 X_pca = pd.DataFrame(X_pca)
 X_pca_with_date = pd.concat([X_pca, X['X1 transaction date']], axis=1)
@@ -71,6 +75,8 @@ plt.legend()
 plt.show()
 ```
 
+This visual representation showcases the comparison between actual and predicted house prices, arranged in chronological order. The scatter plot juxtaposes actual prices against predictions made by the regression model, sorted according to transaction dates. This ordering provides a clearer view of the model's performance over time, indicating how well it predicts house prices across different chronological points.
+
 ```{python}
 sorted_indices = np.argsort(X_test_dates)
 sorted_dates = X_test_dates.iloc[sorted_indices]
@@ -85,6 +91,8 @@ plt.title('Actual vs. Predicted Price (Sorted by Date)')
 plt.legend()
 plt.show()
 ```
+
+Plot the learning curve incorporating standard deviation (std) to provide a measure of score variability for both the training and cross-validation scores. Depict the training and cross-validation scores over varying training set sizes.
 
 ```{python}
 def plot_learning_curve(estimator, X, y):
@@ -115,6 +123,8 @@ def plot_learning_curve(estimator, X, y):
 
 plot_learning_curve(model, X_train_without_date, Y_train)
 ```
+
+RandomForestRegressor model is employed to predict house prices over time. This illustrates the effectiveness of the RandomForestRegressor in capturing the complexities and nuances inherent in the dataset's temporal fluctuations.
 
 ```{python}
 forest_model = RandomForestRegressor(n_estimators=100, random_state=42)  

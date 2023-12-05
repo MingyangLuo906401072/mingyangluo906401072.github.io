@@ -202,6 +202,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+<p>This post centers on the application of regression techniques with chronological data order.</p>
 <div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -376,6 +377,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/cell-3-output-1.png" width="648" height="523"></p>
 </div>
 </div>
+<p>In this analysis, a linear regression model is applied without accounting for the chronological order of dates within the dataset.</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>X_pca <span class="op">=</span> pd.DataFrame(X_pca)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>X_pca_with_date <span class="op">=</span> pd.concat([X_pca, X[<span class="st">'X1 transaction date'</span>]], axis<span class="op">=</span><span class="dv">1</span>)</span>
@@ -405,6 +407,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/cell-4-output-1.png" width="659" height="523"></p>
 </div>
 </div>
+<p>This visual representation showcases the comparison between actual and predicted house prices, arranged in chronological order. The scatter plot juxtaposes actual prices against predictions made by the regression model, sorted according to transaction dates. This ordering provides a clearer view of the model’s performance over time, indicating how well it predicts house prices across different chronological points.</p>
 <div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sorted_indices <span class="op">=</span> np.argsort(X_test_dates)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>sorted_dates <span class="op">=</span> X_test_dates.iloc[sorted_indices]</span>
@@ -422,6 +425,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/cell-5-output-1.png" width="665" height="523"></p>
 </div>
 </div>
+<p>Plot the learning curve incorporating standard deviation (std) to provide a measure of score variability for both the training and cross-validation scores. Depict the training and cross-validation scores over varying training set sizes.</p>
 <div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_learning_curve(estimator, X, y):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    train_sizes, train_scores, val_scores <span class="op">=</span> learning_curve(</span>
@@ -454,6 +458,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/cell-6-output-1.png" width="672" height="523"></p>
 </div>
 </div>
+<p>RandomForestRegressor model is employed to predict house prices over time. This illustrates the effectiveness of the RandomForestRegressor in capturing the complexities and nuances inherent in the dataset’s temporal fluctuations.</p>
 <div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>forest_model <span class="op">=</span> RandomForestRegressor(n_estimators<span class="op">=</span><span class="dv">100</span>, random_state<span class="op">=</span><span class="dv">42</span>)  </span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>forest_model.fit(X_train_without_date, Y_train)</span>
