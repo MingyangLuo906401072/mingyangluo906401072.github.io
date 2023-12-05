@@ -3,6 +3,7 @@ title: "Earthquake Analysis"
 author: "Mingyang Luo"
 date: "2023-11-18"
 categories: Non-linear Regression, Linear Regression
+image: "eq.jpg"
 ---
 
 -   Simple regression model: The most fundamental regression model where predictions rely on a single feature from the dataset, also known as univariate regression.
