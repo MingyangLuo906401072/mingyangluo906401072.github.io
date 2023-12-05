@@ -3,6 +3,7 @@ title: "Disease Analysis"
 author: "Mingyang Luo"
 date: "2023-11-05"
 categories: [Classification, Anomaly Detection, Clustering]
+image: "bd.jpg"
 ---
 
 $Gaussian Mixture$
