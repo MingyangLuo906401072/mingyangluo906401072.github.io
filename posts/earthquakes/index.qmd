@@ -5,6 +5,16 @@ date: "2023-11-18"
 categories: Non-linear Regression, Linear Regression
 ---
 
+-   Simple regression model: The most fundamental regression model where predictions rely on a single feature from the dataset, also known as univariate regression.
+
+    formula: $y = \beta_0 + \beta_1 x + \epsilon$
+
+    Multiple regression model: In this type of regression model, predictions are derived from multiple features within the dataset, enabling a more comprehensive analysis of relationships between multiple variables.
+
+    formula: $y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \ldots + \beta_p x_{ip} + \epsilon$
+
+    In this post, the spotlight is on multiple regression.
+
 ```{python}
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -38,6 +48,10 @@ numeric_df.columns = numeric.columns
 numeric_df.columns
 ```
 
+The MultiOutputRegressor is employed to handle multiple outputs simultaneously. Within it, a pipeline is established with Polynomial Features (degree 2) and Lasso regularization, aiming to capture complex relationships and reduce overfitting.
+
+The model's predictions on the test set are evaluated using Mean Squared Error (MSE), providing an assessment of how well the model performs in estimating the specified outputs.
+
 ```{python}
 X = numeric_df[['location.depth', 'location.latitude','location.longitude', 'time.epoch', 'impact.gap']]
 y = numeric_df[['impact.magnitude', 'time.month', 'time.day']]
@@ -51,6 +65,12 @@ poly_predictions = poly_model.predict(X_test)
 mse = mean_squared_error(y_test, poly_predictions)
 print(f"Mean Squared Error: {mse}")
 ```
+
+Generate a learning curve to assesse model performance concerning varying training set sizes. The x-axis represents the number of training examples, while the y-axis indicates the Mean Squared Error (MSE) -- a measure of prediction accuracy.
+
+The curve showcases how the model's error changes as the training set size increases. The 'Training error' line represents MSE on the training set, while 'Cross-validation error' signifies the model's performance on unseen data (validation set).
+
+This visualization illuminates how the model's accuracy evolves with an increasing amount of training data. A narrowing gap between the training and cross-validation errors as the training set size grows indicates the model's ability to generalize to new data. Such insights help identify potential underfitting or overfitting issues, guiding adjustments to enhance the model's predictive capability.
 
 ```{python}
 train_sizes, train_scores, test_scores = learning_curve(poly_model, X, y, cv=5, scoring='neg_mean_squared_error')
@@ -68,6 +88,12 @@ plt.plot(train_sizes, test_scores_mean, label="Cross-validation error")
 plt.legend()
 plt.show()
 ```
+
+This code generates scatter plots for each input feature against various output variables. For every input feature, it showcases the model's predicted values (labeled 'Predicted') alongside the actual values (labeled 'Actual') for 'impact.magnitude', 'time.month', and 'time.day'.
+
+These visualizations serve as a comparative analysis, allowing us to observe how well the model's predictions align with the actual values across different output variables concerning specific input features. Such assessments offer a nuanced understanding of the model's performance for various target variables in relation to specific input characteristics.
+
+Each plot's alignment or deviation between predicted and actual values provides insights into the model's effectiveness in capturing relationships between input features and multiple output variables. It helps identify areas where the model excels or requires improvements.
 
 ```{python}
 input_features = ['location.depth', 'location.latitude', 'location.longitude', 'time.epoch', 'impact.gap']
@@ -87,6 +113,8 @@ for input_feat in input_features:
 
     plt.show()
 ```
+
+The scatter points depict the actual values of the output variable concerning the input feature, while the regression line showcases the model's predicted values across the input feature range. This visual representation offers a clear comparison between predicted and actual values, aiding in understanding how well the model captures the relationship between input features and multiple output variables.
 
 ```{python}
 for input_feat in input_features:
