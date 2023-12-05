@@ -6,7 +6,27 @@ categories: [Probability theory, Classification, Anomaly Detection]
 image: "image.jpg"
 ---
 
-This is a post with executable code.
+$\textbf{Naive Bayes}$
+
+The Naive Bayes methods are a collection of supervised learning algorithms that utilize Bayes' theorem with a "naive" assumption of conditional independence among all pairs of features when considering the value of the class variable. Bayes' theorem expresses the following relationship, considering a class variable $\textit{y}$ and a dependent feature vector $x_1$ through $x_n$:
+
+$P(y \mid x_1, \dots, x_n) = \frac{P(y) P(x_1, \dots, x_n \mid y)}{P(x_1, \dots, x_n)}$
+
+This relationship allows for the calculation of the probability of a class variable given the observed features, under the assumption that the features are conditionally independent given the class variable.
+
+Using the naive conditional independence assumption that:
+
+$P(x_i | y, x_1, \dots, x_{i-1}, x_{i+1}, \dots, x_n) = P(x_i | y)$,
+
+for all $i$, this relationship is simplified to:
+
+$P(y \mid x_1, \dots, x_n) = \frac{P(y) \prod_{i=1}^{n} P(x_i \mid y)} {P(x_1, \dots, x_n)}$
+
+Since \$P(x_1, \\dots, x_n)\$ is constant given the input, we can use the following classification rule:
+
+$\begin{align}\begin{aligned}P(y \mid x_1, \dots, x_n) \propto P(y) \prod_{i=1}^{n} P(x_i \mid y)\\\Downarrow\\\hat{y} = \arg\max_y P(y) \prod_{i=1}^{n} P(x_i \mid y),\end{aligned}\end{align}$
+
+then we can use Maximum A Posteriori (MAP) estimation to estimate $P(y)$ and $P(x_i \mid y)$; the former is then the relative frequency of class $y$ in the training set.
 
 ```{python}
 import pandas as pd
@@ -36,6 +56,8 @@ df
 unique_country = df['country'].nunique()
 print(f"Number of unique country: {unique_country}")
 ```
+
+Build a Gaussian Naive Bayes model adeptly predicts wine types leveraging the provided features. The classification report outlines the model's precision and recall for each wine class, underscoring its reliability in discerning between different wine categories. This highlights the model's potential in the realm of wine classification with high overall accuracy.
 
 ```{python}
 categorical_columns = ['winery', 'region', 'type']
@@ -86,9 +108,44 @@ print("Classification Report:")
 print(report)
 ```
 
+Below calculates the maximum probability for each sample in the test dataset generating a kernel density plot (KDE) to visualize the distribution of these maximum predicted probabilities.
+
+For each data point, a kernel function (often a Gaussian kernel) is placed at that point, and these kernels are summed up to create the KDE. The width of the kernel determines how much influence each data point has on the estimation at different points along the x-axis.
+
+The formula for kernel density estimation involves the following steps:
+
+For each data point x, a kernel function K is placed at that point.
+
+The kernel function is often a Gaussian function centered at x.
+
+These kernel functions are summed (or averaged) to get the density estimate.
+
+The general formula for a Gaussian kernel is:
+
+$K(u) = \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2} u^2}$
+
+Where u is a standardized distance ($\frac{x - \mu}{\sigma}$)
+
+The density values in a KDE plot represent the relative likelihood or concentration of the data points at different values along the x-axis. The y-axis values in a KDE plot show the density of occurrences, and the area under the curve represents the probability of the data falling within a specific range.
+
+```{python}
+probabilities = nb_model.predict_proba(X_test)
+max_probabilities = np.max(probabilities, axis=1)
+
+plt.figure(figsize=(8, 6))
+sns.kdeplot(max_probabilities, shade=True, label='Max Probability Density')
+plt.title('Max Probability Density Plot')
+plt.xlabel('Maximum Predicted Probability')
+plt.ylabel('Density')
+plt.legend()
+plt.show()
+```
+
 ```{python}
 print(predictions)
 ```
+
+Plot a sparse confusion matrix
 
 ```{python}
 conf_matrix = confusion_matrix(y_test, predictions)
@@ -127,6 +184,8 @@ plt.annotate(f'Explained Variance PC2: {explained_variance[1]:.2f}',
 plt.grid(True)
 plt.show()
 ```
+
+One-Class SVM for anomaly detection identifiying potential outliers within the dataset. Leveraging the algorithm with a parameter setting of nu=0.03, anomalies are detected and visualized against the principal components in a scatter plot. The distinct identification of anomalies marked in red ('Anomaly (SVM)') amid the 'Normal' data points in coral underscores the efficacy of the One-Class SVM in pinpointing potential outliers within the dataset. This visualization aids in understanding and delineating data points that deviate significantly from the norm, preparing for further investigation or outlier handling in the dataset.
 
 ```{python}
 svm = OneClassSVM(nu=0.03) 
