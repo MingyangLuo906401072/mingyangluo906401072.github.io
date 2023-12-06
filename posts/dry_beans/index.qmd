@@ -3,7 +3,7 @@ title: "Dry Beans Anaysis"
 author: "Mingyang Luo"
 date: "2023-11-08"
 categories: [Classification, Clustering, Anomaly Detection]
-image: "image.jpg"
+image: "db.jpg"
 ---
 
 **`DecisionTreeClassifier`** operates by partitioning the dataset into subsets based on the values of input features. It creates a tree-like structure where each node represents a feature, each branch denotes a decision based on that feature, and each leaf node signifies the class label or outcome. While decision trees are interpretable and intuitive, they are prone to overfitting when the tree grows too complex.

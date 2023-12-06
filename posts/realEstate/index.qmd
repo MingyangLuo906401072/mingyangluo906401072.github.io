@@ -3,6 +3,7 @@ title: "Real Estate Analysis"
 author: "Mingyang Luo"
 date: "2023-11-05"
 categories: [Linear Regression, Non-linear Regression]
+image: "re.jpg"
 ---
 
 This post centers on the application of regression techniques with chronological data order.
